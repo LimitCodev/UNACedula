@@ -24,4 +24,4 @@ app.get('/candidatos', async(req, res) => {
     }
 });
 
-app.listen(3000, () => console.log('UP'));
+app.listen(8080, () => console.log('UP'));
