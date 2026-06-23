@@ -7,12 +7,12 @@ app.use(express.json());
 app.use(cors());
 
 const db = mysql.createPool({
-  host:     'gateway01.us-east-1.prod.aws.tidbcloud.com',
-  port:      4000,
-  user:     '2kqqCZ3qosY8h1d.root',
-  password: 'VfGjvbxL5ppCmduz',
-  database: 'unacedula',
-  ssl:      { rejectUnauthorized: true },
+  host:               process.env.DB_HOST,
+  port:               Number(process.env.DB_PORT),
+  user:               process.env.DB_USER,
+  password:           process.env.DB_PASSWORD,
+  database:           process.env.DB_NAME,
+  ssl:                { rejectUnauthorized: true },
   waitForConnections: true,
   connectionLimit:    10,
 });
@@ -20,17 +20,10 @@ const db = mysql.createPool({
 const audit = (accion) =>
   db.query('INSERT INTO auditoria_electoral (accion) VALUES (?)', [accion]).catch(() => {});
 
-/* ══════════════════════════════════════════
-   GET /candidatos
-══════════════════════════════════════════ */
 app.get('/candidatos', async (req, res) => {
   try {
     const [candidatos] = await db.query(`
-      SELECT
-        c.id_candidato,
-        p.nombre_partido,
-        c.cargo_postula,
-        e.dni AS nombre_candidato
+      SELECT c.id_candidato, p.nombre_partido, c.cargo_postula, e.dni AS nombre_candidato
       FROM candidato c
       JOIN partido_politico p ON c.id_partido    = p.id_partido
       JOIN elector          e ON c.dni_candidato = e.dni
@@ -42,10 +35,6 @@ app.get('/candidatos', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /auth/miembro
-   Body: { dni_usuario, codigo_alumno, token_mesa }
-══════════════════════════════════════════ */
 app.post('/auth/miembro', async (req, res) => {
   const { dni_usuario, codigo_alumno, token_mesa } = req.body;
   if (!dni_usuario || !codigo_alumno || !token_mesa)
@@ -61,8 +50,8 @@ app.post('/auth/miembro', async (req, res) => {
     const [[mm]] = await db.query(`
       SELECT mm.id_mesa, mm.rol, f.siglas AS facultad
       FROM miembro_mesa mm
-      JOIN mesa     m ON mm.id_mesa     = m.id_mesa
-      JOIN facultad f ON m.id_facultad  = f.id_facultad
+      JOIN mesa     m ON mm.id_mesa    = m.id_mesa
+      JOIN facultad f ON m.id_facultad = f.id_facultad
       WHERE mm.dni_miembro = ? AND mm.token_acceso = ? AND mm.permiso_activo = TRUE
     `, [dni_usuario, token_mesa]);
 
@@ -77,10 +66,6 @@ app.post('/auth/miembro', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /auth/votante
-   Body: { dni_usuario, codigo_alumno, pin_acceso }
-══════════════════════════════════════════ */
 app.post('/auth/votante', async (req, res) => {
   const { dni_usuario, codigo_alumno, pin_acceso } = req.body;
   if (!dni_usuario || !codigo_alumno || !pin_acceso)
@@ -95,7 +80,7 @@ app.post('/auth/votante', async (req, res) => {
     const [[el]] = await db.query(`
       SELECT e.*, es.id_facultad, f.siglas AS facultad
       FROM elector  e
-      JOIN escuela  es ON e.id_escuela  = es.id_escuela
+      JOIN escuela  es ON e.id_escuela   = es.id_escuela
       JOIN facultad f  ON es.id_facultad = f.id_facultad
       WHERE e.dni = ? AND e.codigo_alumno = ? AND e.pin_acceso = ?
     `, [dni_usuario, codigo_alumno, pin_acceso]);
@@ -119,9 +104,6 @@ app.post('/auth/votante', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /mesa/:id_mesa
-══════════════════════════════════════════ */
 app.get('/mesa/:id_mesa', async (req, res) => {
   const { id_mesa } = req.params;
   try {
@@ -141,8 +123,8 @@ app.get('/mesa/:id_mesa', async (req, res) => {
     const [[padron]] = await db.query(`
       SELECT COUNT(*) AS total
       FROM elector e
-      JOIN escuela  es ON e.id_escuela  = es.id_escuela
-      JOIN mesa     me ON me.id_mesa    = ?
+      JOIN escuela es ON e.id_escuela  = es.id_escuela
+      JOIN mesa    me ON me.id_mesa    = ?
       WHERE es.id_facultad = me.id_facultad
     `, [id_mesa]);
 
@@ -164,10 +146,6 @@ app.get('/mesa/:id_mesa', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /mesa/asistencia
-   Body: { id_mesa, dni, token_mesa }
-══════════════════════════════════════════ */
 app.post('/mesa/asistencia', async (req, res) => {
   const { id_mesa, dni, token_mesa } = req.body;
   try {
@@ -191,10 +169,6 @@ app.post('/mesa/asistencia', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /mesa/iniciar
-   Body: { id_mesa, dni }
-══════════════════════════════════════════ */
 app.post('/mesa/iniciar', async (req, res) => {
   const { id_mesa, dni } = req.body;
   try {
@@ -213,9 +187,6 @@ app.post('/mesa/iniciar', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /mesa/:id_mesa/conteo
-══════════════════════════════════════════ */
 app.get('/mesa/:id_mesa/conteo', async (req, res) => {
   const { id_mesa } = req.params;
   try {
@@ -224,8 +195,10 @@ app.get('/mesa/:id_mesa/conteo', async (req, res) => {
     );
     const [[padron]] = await db.query(`
       SELECT COUNT(*) AS total_padron
-      FROM elector e JOIN escuela es ON e.id_escuela = es.id_escuela
-      JOIN mesa m ON m.id_mesa = ? WHERE es.id_facultad = m.id_facultad
+      FROM elector e
+      JOIN escuela es ON e.id_escuela  = es.id_escuela
+      JOIN mesa    m  ON m.id_mesa     = ?
+      WHERE es.id_facultad = m.id_facultad
     `, [id_mesa]);
     res.json({ ok: true, votos_emitidos: emitidos[0]?.votos_emitidos || 0, total_padron: padron[0]?.total_padron || 0 });
   } catch (e) {
@@ -233,9 +206,6 @@ app.get('/mesa/:id_mesa/conteo', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /mesa/:id_mesa/avance
-══════════════════════════════════════════ */
 app.get('/mesa/:id_mesa/avance', async (req, res) => {
   const { id_mesa } = req.params;
   try {
@@ -244,8 +214,10 @@ app.get('/mesa/:id_mesa/avance', async (req, res) => {
     );
     const [[padron]] = await db.query(`
       SELECT COUNT(*) AS total_padron
-      FROM elector e JOIN escuela es ON e.id_escuela = es.id_escuela
-      JOIN mesa m ON m.id_mesa = ? WHERE es.id_facultad = m.id_facultad
+      FROM elector e
+      JOIN escuela es ON e.id_escuela  = es.id_escuela
+      JOIN mesa    m  ON m.id_mesa     = ?
+      WHERE es.id_facultad = m.id_facultad
     `, [id_mesa]);
     res.json({ ok: true, votos_emitidos: emitidos[0]?.votos_emitidos || 0, total_padron: padron[0]?.total_padron || 0 });
   } catch (e) {
@@ -253,10 +225,6 @@ app.get('/mesa/:id_mesa/avance', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /voto/emitir
-   Body: { dni_usuario, codigo_alumno, id_candidato, id_mesa }
-══════════════════════════════════════════ */
 app.post('/voto/emitir', async (req, res) => {
   const { dni_usuario, codigo_alumno, id_candidato, id_mesa } = req.body;
   try {
@@ -264,8 +232,8 @@ app.post('/voto/emitir', async (req, res) => {
       'SELECT ya_voto, creditos_matriculados FROM elector WHERE dni = ? AND codigo_alumno = ?',
       [dni_usuario, codigo_alumno]
     );
-    if (!el?.length)  return res.json({ ok: false, error: 'Elector no encontrado.' });
-    if (el[0].ya_voto) return res.json({ ok: false, error: 'Usted ya emitió su voto.' });
+    if (!el?.length)            return res.json({ ok: false, error: 'Elector no encontrado.' });
+    if (el[0].ya_voto)          return res.json({ ok: false, error: 'Usted ya emitió su voto.' });
     if (el[0].creditos_matriculados < 12) return res.json({ ok: false, error: 'Créditos insuficientes.' });
 
     const tipo = id_candidato ? 'valido' : 'blanco';
@@ -289,9 +257,6 @@ app.post('/voto/emitir', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /stats/global
-══════════════════════════════════════════ */
 app.get('/stats/global', async (req, res) => {
   try {
     const [candidatos] = await db.query(`
@@ -318,10 +283,10 @@ app.get('/stats/global', async (req, res) => {
              COUNT(v.id_voto)      AS total_votos,
              ROUND(COUNT(v.id_voto) * 100.0 / NULLIF(COUNT(DISTINCT e.dni), 0), 1) AS pct_participacion
       FROM facultad f
-      LEFT JOIN escuela          es ON es.id_facultad = f.id_facultad
-      LEFT JOIN elector           e ON e.id_escuela   = es.id_escuela
-      LEFT JOIN mesa              m ON m.id_facultad  = f.id_facultad
-      LEFT JOIN voto_registrado   v ON v.id_mesa      = m.id_mesa
+      LEFT JOIN escuela         es ON es.id_facultad = f.id_facultad
+      LEFT JOIN elector          e ON e.id_escuela   = es.id_escuela
+      LEFT JOIN mesa             m ON m.id_facultad  = f.id_facultad
+      LEFT JOIN voto_registrado  v ON v.id_mesa      = m.id_mesa
       GROUP BY f.id_facultad, f.siglas
     `);
 
@@ -338,9 +303,6 @@ app.get('/stats/global', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /stats/facultad/:facultad   (siglas: FIIS, FCE…)
-══════════════════════════════════════════ */
 app.get('/stats/facultad/:facultad', async (req, res) => {
   const { facultad } = req.params;
   try {
@@ -353,14 +315,13 @@ app.get('/stats/facultad/:facultad', async (req, res) => {
     `, [facultad]);
 
     const [candidatos] = await db.query(`
-      SELECT p.nombre_partido, e2.dni AS nombre_candidato,
-             COUNT(v.id_voto) AS votos
+      SELECT p.nombre_partido, e2.dni AS nombre_candidato, COUNT(v.id_voto) AS votos
       FROM candidato c
       JOIN partido_politico p  ON c.id_partido    = p.id_partido
       JOIN elector          e2 ON c.dni_candidato = e2.dni
       LEFT JOIN voto_registrado v ON v.id_candidato = c.id_candidato
-      LEFT JOIN mesa             m ON v.id_mesa = m.id_mesa
-      LEFT JOIN facultad         f ON m.id_facultad = f.id_facultad AND f.siglas = ?
+      LEFT JOIN mesa            m ON v.id_mesa      = m.id_mesa
+      LEFT JOIN facultad        f ON m.id_facultad  = f.id_facultad AND f.siglas = ?
       GROUP BY c.id_candidato ORDER BY c.id_candidato
     `, [facultad]);
 
@@ -370,10 +331,6 @@ app.get('/stats/facultad/:facultad', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /god/toggle-elecciones
-   Body: { activas: bool }
-══════════════════════════════════════════ */
 app.post('/god/toggle-elecciones', async (req, res) => {
   const { activas } = req.body;
   try {
@@ -388,10 +345,6 @@ app.post('/god/toggle-elecciones', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /god/forzar-apertura
-   Body: { mesa: id_mesa }
-══════════════════════════════════════════ */
 app.post('/god/forzar-apertura', async (req, res) => {
   const { mesa } = req.body;
   try {
@@ -403,10 +356,6 @@ app.post('/god/forzar-apertura', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /god/simular-votos
-   Body: { cantidad: n, blanco: bool }
-══════════════════════════════════════════ */
 app.post('/god/simular-votos', async (req, res) => {
   const { cantidad = 10, blanco = false } = req.body;
   try {
@@ -428,9 +377,6 @@ app.post('/god/simular-votos', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   POST /god/reset-demo
-══════════════════════════════════════════ */
 app.post('/god/reset-demo', async (req, res) => {
   try {
     await db.query('DELETE FROM voto_registrado');
@@ -444,9 +390,6 @@ app.post('/god/reset-demo', async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════
-   GET /god/audit-log
-══════════════════════════════════════════ */
 app.get('/god/audit-log', async (req, res) => {
   try {
     const [logs] = await db.query(
