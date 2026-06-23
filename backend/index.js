@@ -1,24 +1,24 @@
 const express = require('express');
-const mysql   = require('mysql2/promise');
-const cors    = require('cors');
+const mysql = require('mysql2/promise');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const db = mysql.createPool({
-  host:     'gateway01.us-east-1.prod.aws.tidbcloud.com',
-  port:      4000,
-  user:     '2kqqCZ3qosY8h1d.root',
-  password: 'VfGjvbxL5ppCmduz',
+  host: 'gateway01.us-east-1.prod.aws.tidbcloud.com',
+  port: 4000,
+  user: '2kqqCZ3qosY8h1d.root',
+  password: 'gt0xiKFaGzTVcmDO',
   database: 'unacedula',
-  ssl:      { rejectUnauthorized: true },
+  ssl: { rejectUnauthorized: true },
   waitForConnections: true,
-  connectionLimit:    10,
+  connectionLimit: 10,
 });
 
 const audit = (accion) =>
-  db.query('INSERT INTO auditoria_electoral (accion) VALUES (?)', [accion]).catch(() => {});
+  db.query('INSERT INTO auditoria_electoral (accion) VALUES (?)', [accion]).catch(() => { });
 
 /* ══════════════════════════════════════════
    GET /candidatos
@@ -150,14 +150,14 @@ app.get('/mesa/:id_mesa', async (req, res) => {
     const [candsRows] = await db.query('SELECT COUNT(*) AS total FROM candidato');
 
     res.json({
-      ok:               true,
-      numero_mesa:      m.id_mesa,
-      facultad:         m.facultad,
-      estado:           m.estado_mesa,
-      total_padron:     padronRows[0]?.total || 0,
-      total_candidatos: candsRows[0]?.total  || 0,
-      presentes:        miembros.filter(x => x.presente).length,
-      total_miembros:   miembros.length,
+      ok: true,
+      numero_mesa: m.id_mesa,
+      facultad: m.facultad,
+      estado: m.estado_mesa,
+      total_padron: padronRows[0]?.total || 0,
+      total_candidatos: candsRows[0]?.total || 0,
+      presentes: miembros.filter(x => x.presente).length,
+      total_miembros: miembros.length,
       miembros,
     });
   } catch (e) {
@@ -265,7 +265,7 @@ app.post('/voto/emitir', async (req, res) => {
       'SELECT ya_voto, creditos_matriculados FROM elector WHERE dni = ? AND codigo_alumno = ?',
       [dni_usuario, codigo_alumno]
     );
-    if (!elRows.length)    return res.json({ ok: false, error: 'Elector no encontrado.' });
+    if (!elRows.length) return res.json({ ok: false, error: 'Elector no encontrado.' });
     if (elRows[0].ya_voto) return res.json({ ok: false, error: 'Usted ya emitió su voto.' });
     if (elRows[0].creditos_matriculados < 12) return res.json({ ok: false, error: 'Créditos insuficientes.' });
 
@@ -329,10 +329,10 @@ app.get('/stats/global', async (req, res) => {
 
     res.json({
       ok: true, candidatos,
-      total_votos:   totales?.total_votos   || 0,
-      votos_validos: totales?.votos_validos  || 0,
-      votos_blancos: totales?.votos_blancos  || 0,
-      votos_nulos:   totales?.votos_nulos    || 0,
+      total_votos: totales?.total_votos || 0,
+      votos_validos: totales?.votos_validos || 0,
+      votos_blancos: totales?.votos_blancos || 0,
+      votos_nulos: totales?.votos_nulos || 0,
       por_facultad,
     });
   } catch (e) {
@@ -459,12 +459,12 @@ app.post('/god/simular-votos', async (req, res) => {
   const { cantidad = 10, blanco = false } = req.body;
   try {
     const [candidatos] = await db.query('SELECT id_candidato FROM candidato');
-    const [mesas]      = await db.query("SELECT id_mesa FROM mesa WHERE estado_mesa = 'abierta'");
+    const [mesas] = await db.query("SELECT id_mesa FROM mesa WHERE estado_mesa = 'abierta'");
     if (!mesas.length) return res.json({ ok: false, error: 'No hay mesas abiertas.' });
 
     const valores = [];
     for (let i = 0; i < cantidad; i++) {
-      const id_mesa      = mesas[i % mesas.length].id_mesa;
+      const id_mesa = mesas[i % mesas.length].id_mesa;
       const id_candidato = blanco ? null : candidatos[i % candidatos.length].id_candidato;
       valores.push([id_mesa, id_candidato, blanco ? 'blanco' : 'valido']);
     }
