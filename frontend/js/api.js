@@ -3,7 +3,7 @@
    Reemplaza BASE_URL con tu URL de backend
 ══════════════════════════════════════════ */
 
-const BASE_URL = 'https://unacedula-rosj609o.b4a.run';
+const BASE_URL = 'https://unacedula-wfkfwyrd.b4a.run/';
 
 /* ── UTILIDADES ── */
 async function apiFetch(endpoint, options = {}) {
