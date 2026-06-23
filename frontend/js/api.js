@@ -3,7 +3,7 @@
    Reemplaza BASE_URL con tu URL de backend
 ══════════════════════════════════════════ */
 
-const BASE_URL = 'https://unacedula-wfkfwyrd.b4a.run/';
+const BASE_URL = 'https://unacedula-rosj609o.b4a.run';
 
 /* ── UTILIDADES ── */
 async function apiFetch(endpoint, options = {}) {
@@ -86,5 +86,8 @@ const API = {
   forzarApertura: (body) => apiFetch('/god/forzar-apertura', { method: 'POST', body: JSON.stringify(body) }),
   simularVotos: (body) => apiFetch('/god/simular-votos', { method: 'POST', body: JSON.stringify(body) }),
   resetDemo: () => apiFetch('/god/reset-demo', { method: 'POST' }),
+  getEstadoGod: () => apiFetch('/god/estado'),
+  habilitarSuplente: (body) => apiFetch('/god/habilitar-suplente', { method: 'POST', body: JSON.stringify(body) }),
+  extenderHorario: (body) => apiFetch('/god/extender-horario', { method: 'POST', body: JSON.stringify(body) }),
   getAuditLog: () => apiFetch('/god/audit-log'),
 };
