@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UNACedula — Panel Desarrollador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/global.css"/>
+</head>
+<body class="god-body">
+  <!-- HEADER -->
+  <div class="header header--dark">
+    <div class="header__left">
+      <span class="logo logo--sm logo--on-dark"><span class="logo__una">UNA</span><span class="logo__c">C</span><span class="logo__edula">edula</span></span>
+      <div class="header__divider"></div>
+      <span class="header__sub" style="color:#94a3b8">MODO DESARROLLADOR</span>
+      <span class="header__badge-restricted">RESTRINGIDO</span>
+    </div>
+    <button class="header__back" onclick="window.location.href='index.html'">← Volver</button>
+  </div>
+
+  <div class="god-page-body">
+
+    <!-- WARNING -->
+    <div class="god-warning">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Panel exclusivo para sustentación. Estas acciones afectan directamente la base de datos de producción.
+    </div>
+
+    <div class="god-grid">
+
+      <!-- SEMÁFORO DE ELECCIONES -->
+      <div class="god-card">
+        <p class="god-card__title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83"/></svg>
+          Semáforo de Elecciones
+        </p>
+        <div class="semaforo">
+          <div>
+            <p class="semaforo__label">Estado actual:</p>
+            <p class="semaforo__status" id="sem-label" style="color:#4ade80">● ACTIVAS</p>
+          </div>
+          <div class="semaforo__dot-wrap" style="background:rgba(74,222,128,0.15)" id="sem-dot-wrap">
+            <div class="semaforo__dot on" id="sem-dot"></div>
+          </div>
+        </div>
+        <button class="god-toggle-btn deactivate" id="btn-toggle-sem" onclick="toggleElecciones()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18.36 6.64A9 9 0 0 1 20.77 15"/><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          <span id="sem-btn-text">Desactivar Elecciones</span>
+        </button>
+      </div>
+
+      <!-- GESTIÓN DE CONTINGENCIAS -->
+      <div class="god-card">
+        <p class="god-card__title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Gestión de Contingencias
+        </p>
+        <button class="god-action-btn" onclick="godAction('habilitar_suplente', {mesa:4, num:1})">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Habilitar Suplente 1 (Mesa 004)
+        </button>
+        <button class="god-action-btn" onclick="godAction('habilitar_suplente', {mesa:4, num:2})">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Habilitar Suplente 2 (Mesa 004)
+        </button>
+        <button class="god-action-btn" onclick="godAction('forzar_apertura', {mesa:4})">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Forzar Apertura de Mesa 004
+        </button>
+        <button class="god-action-btn" onclick="godAction('extender_horario', {})">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Extender horario de votación
+        </button>
+      </div>
+
+      <!-- SIMULACIÓN DE TRÁFICO -->
+      <div class="god-card">
+        <p class="god-card__title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Simulación de Tráfico
+        </p>
+        <p class="seed-count">Votos simulados: <strong id="sim-count">0</strong></p>
+        <div class="seed-grid">
+          <button class="seed-btn seed-btn--blue" onclick="simularVotos(10)">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            +10 Votos
+          </button>
+          <button class="seed-btn seed-btn--blue" onclick="simularVotos(100)">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            +100 Votos
+          </button>
+          <button class="seed-btn seed-btn--blue" onclick="simularVotos(1000)">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            +1000 Votos
+          </button>
+          <button class="seed-btn seed-btn--blank" onclick="simularVotos(1, true)">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            Voto Blanco
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTROL DE BASE DE DATOS -->
+      <div class="god-card">
+        <p class="god-card__title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Control de Base de Datos
+        </p>
+        <div class="db-code">
+          <code>TRUNCATE TABLE voto_registrado;<br/>UPDATE elector SET ya_voto = FALSE;</code>
+        </div>
+        <button class="god-reset-btn" onclick="confirmarReset()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+          Reiniciar Demostración (Limpiar BD)
+        </button>
+      </div>
+
+    </div>
+
+    <!-- AUDITORÍA -->
+    <div class="god-card" style="grid-column:1/-1">
+      <p class="god-card__title">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Auditoría del Sistema
+      </p>
+      <div class="audit-log" id="audit-log">
+        <div class="audit-entry new">› Cargando registros...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL CONFIRMAR RESET -->
+  <div class="modal-overlay" id="modal-reset" style="display:none">
+    <div class="modal-box" style="background:#1e293b;border-radius:20px;border:1px solid #334155;padding:28px">
+      <div class="modal-inner">
+        <div class="modal-icon" style="background:#7f1d1d">
+          <svg width="28" height="28" fill="none" stroke="#fca5a5" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <p class="modal-title" style="color:#f1f5f9">¿Limpiar toda la BD?</p>
+        <p class="modal-sub" style="color:#94a3b8">Esta acción eliminará TODOS los votos y reiniciará el padrón. Es irreversible.</p>
+        <div class="modal-actions">
+          <button class="modal-cancel" style="background:#334155;border-color:#475569;color:#94a3b8" onclick="document.getElementById('modal-reset').style.display='none'">Cancelar</button>
+          <button class="btn btn--danger" onclick="ejecutarReset()" style="flex:1;padding:12px 0">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+            Sí, reiniciar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/god.js"></script>
+</body>
+</html>

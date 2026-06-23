@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UNACedula — Sistema Electoral Universitario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/global.css"/>
+</head>
+<body>
+  <div class="home-layout">
+
+    <!-- LEFT PANEL -->
+    <div class="home-left">
+      <div class="home-left__bg-circle home-left__bg-circle--top"></div>
+      <div class="home-left__bg-circle home-left__bg-circle--bottom"></div>
+      <div class="home-left__bg-circle home-left__bg-circle--mid"></div>
+      <svg class="home-left__dots" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.5" fill="white"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dots)"/>
+      </svg>
+
+      <div class="home-left__content">
+        <!-- Logo -->
+        <div class="logo-card animate-in" style="--delay:0s">
+          <div class="logo-card__inner">
+            <span class="logo"><span class="logo__una">UNA</span><span class="logo__c">C</span><span class="logo__edula">edula</span></span>
+          </div>
+        </div>
+        <div class="home-left__subtitle animate-in" style="--delay:0.1s">
+          <p class="subtitle-label">SISTEMA ELECTORAL UNIVERSITARIO</p>
+          <div class="subtitle-divider"></div>
+          <p class="subtitle-year">Elecciones Estudiantiles UNAC · 2026</p>
+        </div>
+
+        <!-- Nav buttons -->
+        <div class="home-nav animate-in" style="--delay:0.2s">
+          <button class="home-nav__btn" id="btn-miembro" onclick="selectSection('miembro')">
+            <div class="home-nav__icon home-nav__icon--gold">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="home-nav__text">
+              <p class="home-nav__label">Miembro de Mesa</p>
+              <p class="home-nav__desc">Acceso para fiscalizadores electorales</p>
+            </div>
+            <svg class="home-nav__arrow" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          <button class="home-nav__btn" id="btn-votante" onclick="selectSection('votante')">
+            <div class="home-nav__icon home-nav__icon--teal">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="home-nav__text">
+              <p class="home-nav__label">Votante</p>
+              <p class="home-nav__desc">Emite tu voto de forma segura</p>
+            </div>
+            <svg class="home-nav__arrow" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          <button class="home-nav__btn home-nav__btn--dark" onclick="window.location.href='stats.html'">
+            <div class="home-nav__icon home-nav__icon--navy">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/></svg>
+            </div>
+            <div class="home-nav__text">
+              <p class="home-nav__label">Ver Estadística</p>
+              <p class="home-nav__desc">Resultados en tiempo real — acceso libre</p>
+            </div>
+            <svg class="home-nav__arrow" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <button class="god-link" onclick="window.location.href='god.html'">Panel de Control del Desarrollador</button>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="home-right">
+      <svg class="home-right__grid" xmlns="http://www.w3.org/2000/svg">
+        <defs><pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#023047" stroke-width="0.8"/>
+        </pattern></defs>
+        <rect width="100%" height="100%" fill="url(#grid)"/>
+      </svg>
+      <div class="home-right__circle home-right__circle--top"></div>
+      <div class="home-right__circle home-right__circle--bottom"></div>
+
+      <!-- DEFAULT STATE -->
+      <div class="home-right__default" id="panel-default">
+        <div class="badge-ring">
+          <div class="badge-ring__inner">
+            <svg width="28" height="28" fill="none" stroke="#ffb703" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span class="badge-ring__label">UNAC<br/>2026</span>
+          </div>
+        </div>
+        <div class="home-right__info">
+          <p class="home-right__title">Elecciones para Rector</p>
+          <p class="home-right__university">Universidad Nacional del Callao</p>
+          <div class="home-right__chips">
+            <span class="chip">📅 15 Nov 2026</span>
+            <span class="chip">⏰ 08:00 – 17:00</span>
+            <span class="chip">🎓 3 Candidatos</span>
+          </div>
+        </div>
+        <div class="candidate-list" id="candidate-list">
+          <p class="candidate-list__hint">Selecciona una opción en el menú para comenzar</p>
+          <!-- Loaded dynamically from API -->
+        </div>
+      </div>
+
+      <!-- LOGIN FORM (hidden by default) -->
+      <div class="login-panel" id="panel-login" style="display:none">
+        <div class="login-panel__step">
+          <div class="login-panel__step-num" id="login-step-num">1</div>
+          <div>
+            <p class="login-panel__step-title">Credenciales de Acceso</p>
+            <p class="login-panel__step-sub" id="login-step-sub">Paso 1 de 2 — Ingreso como Miembro de Mesa</p>
+          </div>
+        </div>
+
+        <div class="form-card" id="form-card">
+          <div class="form-card__header">
+            <div class="form-card__icon" id="form-icon">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <p class="form-card__title" id="form-title">Miembro de Mesa</p>
+              <p class="form-card__sub">Elecciones de Rector UNAC 2026</p>
+            </div>
+          </div>
+
+          <div class="alert" id="login-alert" style="display:none"></div>
+
+          <div class="form-fields">
+            <div class="field">
+              <label class="field__label">DNI</label>
+              <div class="field__wrap">
+                <svg class="field__icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input class="field__input" id="input-dni" type="text" maxlength="8" placeholder="Número de DNI (8 dígitos)"/>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label">Código de Alumno</label>
+              <div class="field__wrap">
+                <span class="field__icon field__icon--hash">#</span>
+                <input class="field__input" id="input-codigo" type="text" placeholder="Código universitario"/>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" id="pw-label">Token de Mesa</label>
+              <div class="field__wrap">
+                <svg class="field__icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input class="field__input" id="input-pw" type="password" placeholder="Contraseña asignada a la mesa"/>
+                <button class="field__eye" onclick="togglePw()" type="button" id="eye-btn">
+                  <svg id="eye-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <button class="btn btn--full btn--lg" id="login-btn" onclick="submitLogin()">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <span id="login-btn-text">Ingresar como Miembro</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-info" id="form-info">
+          <p class="form-info__title">📋 Datos de tu mesa</p>
+          <div class="form-info__rows" id="form-info-rows"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>
